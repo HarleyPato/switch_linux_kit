@@ -13,7 +13,7 @@ SHA256_RYU_OPM=8f7df21829368e87123f55f8954f8b8edb52c0f77cb4a504c783dad7637dd8f4
 ZIPNAME_RYU_OPM=ryu-opm1.171019.026-factory-8f7df218.zip
 URL_RYU_OPM=https://dl.google.com/dl/android/aosp/ryu-opm1.171019.026-factory-8f7df218.zip
 DIRNAME_RYU_OPM=ryu-opm1.171019.026
-SHA256_SMAUG=??
+SHA256_SMAUG=ed121ba1f5dbbf756f2b0b559fef97b2def88afa9217916686aa88c8c2760ce9
 IMGNAME_SMAUG=bootloader-dragon-google_smaug.7900.97.0.img
 
 make() {
@@ -79,7 +79,7 @@ build_coreboot() {
     popd
 
     if ! [ -f ../tegra_mtc.bin ]; then
-        "  Extracting Tegra RAM trainer blob from Pixel C factory restore image..."
+        echo "  Extracting Tegra RAM trainer blob from Pixel C factory restore image..."
         ./util/cbfstool/cbfstool "../${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" extract -n fallback/tegra_mtc -f tegra_mtc.bin
         cp tegra_mtc.bin ..
     fi
