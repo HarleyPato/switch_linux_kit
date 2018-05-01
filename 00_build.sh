@@ -52,6 +52,7 @@ build_coreboot() {
     cd /source
     cd coreboot
     make nintendo_switch_defconfig
+    make iasl
     make util/cbfstool/cbfstool
 
     if ! [ -f ../tegra_mtc.bin ]; then
@@ -69,7 +70,6 @@ build_coreboot() {
         exit 1
     fi
 
-    make iasl
     make -j"${NPROC}"
 }
 
@@ -93,6 +93,7 @@ build_linux() {
 }
 
 build_all() {
+    fetch_tegra_ram_trainer
     build_exploit
     build_uboot
 #    build_recore
