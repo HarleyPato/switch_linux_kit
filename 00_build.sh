@@ -29,14 +29,12 @@ fetch_tegra_ram_trainer() {
     cd /source/vendor
     if ! [ -f tegra_mtc.bin ]; then
         echo "Fetching Tegra RAM trainer blob..."
-        if [ -f "${ZIPNAME_RYU_OPM}" ] && [ "$(sha256 "${ZIPNAME_RYU_OPM}")" != "${SHA256_RYU_OPM}" ]; then
+        if ! [ -f "${ZIPNAME_RYU_OPM}" ] || [ "$(sha256 "${ZIPNAME_RYU_OPM}")" != "${SHA256_RYU_OPM}" ]; then
             rm -rf "${DIRNAME_RYU_OPM}" "${ZIPNAME_RYU_OPM}"
             wget "${URL_RYU_OPM}"
         fi
-        if [ -f "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" ] && [ "$(sha256 "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}")" != "${SHA256_SMAUG}" ]; then
+        if ! [ -f "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" ] || [ "$(sha256 "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}")" != "${SHA256_SMAUG}" ]; then
             rm -rf "${DIRNAME_RYU_OPM}"
-        fi
-        if ! [ -f "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" ]; then
             unzip "${ZIPNAME_RYU_OPM}"
         fi
     fi
