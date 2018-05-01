@@ -26,7 +26,7 @@ sha256() {
 
 fetch_tegra_ram_trainer() {
     echo "Checking Tegra RAM trainer blob..."
-    cd /source
+    cd /source/vendor
     if ! [ -f tegra_mtc.bin ]; then
         echo "Fetching Tegra RAM trainer blob..."
         if [ -f "${ZIPNAME_RYU_OPM}" ] && [ "$(sha256 "${ZIPNAME_RYU_OPM}")" != "${SHA256_RYU_OPM}" ]; then
@@ -66,14 +66,14 @@ build_coreboot() {
     make cbfstool
     popd
 
-    if ! [ -f ../tegra_mtc.bin ]; then
+    if ! [ -f ../vendor/tegra_mtc.bin ]; then
         echo "  Extracting Tegra RAM trainer blob from Pixel C factory restore image..."
         ./util/cbfstool/cbfstool "../${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" extract -n fallback/tegra_mtc -f tegra_mtc.bin
-        cp tegra_mtc.bin ..
+        cp tegra_mtc.bin ../vendor
     fi
 
     if ! [ -f tegra_mtc.bin ]; then
-        cp ../tegra_mtc.bin .
+        cp ../vendor/tegra_mtc.bin .
     fi
 
     if [ "$(sha256 tegra_mtc.bin)" != "edb32e3f9ed15b55e780e8a01ef927a3b8a1f25b34a6f95467041d8953777d21" ]; then
