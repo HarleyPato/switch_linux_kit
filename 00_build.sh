@@ -40,6 +40,7 @@ fetch_tegra_ram_trainer() {
             unzip "${ZIPNAME_RYU_OPM}"
         fi
     fi
+    cd ..
 }
 
 build_exploit() {
