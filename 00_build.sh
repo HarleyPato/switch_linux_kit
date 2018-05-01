@@ -9,13 +9,19 @@ export NPROC
 CROSS_COMPILE=aarch64-linux-gnu-
 export CROSS_COMPILE
 
+sha256() {
+    sha256sum "$1" | awk '{ print $1 }'
+}
+
 fetch_tegra_ram_trainer() {
     echo "Checking Tegra RAM trainer blob..."
     cd /source
     if ! [ -f tegra_mtc.bin ]; then
-        echo "Fetching Google Pixel C factory restore image for Tegra RAM trainer blob..."
-        rm -f ryu-opm1.171019.026-factory-8f7df218.zip
-        wget https://dl.google.com/dl/android/aosp/ryu-opm1.171019.026-factory-8f7df218.zip
+        echo "Fetching Tegra RAM trainer blob..."
+        if [ -f ryu-opm1.171019.026-factory-8f7df218.zip -a "$(sha256 ryu-opm1.171019.026-factory-8f7df218.zip)" != "bdf9a76e52a4ab6e90fed077ffea2d39975df6f9c6fe56e628ed379ff708fe98" ]; then
+            rm -f ryu-opm1.171019.026-factory-8f7df218.zip ryu-opm1.171019.026
+        fi
+        wget -N https://dl.google.com/dl/android/aosp/ryu-opm1.171019.026-factory-8f7df218.zip
         unzip ryu-opm1.171019.026-factory-8f7df218.zip
         mv ryu-opm1.171019.026/bootloader-dragon-google_smaug.7900.97.0.img .
     fi
@@ -65,7 +71,7 @@ build_coreboot() {
         cp ../tegra_mtc.bin .
     fi
 
-    if [ "$(sha256sum tegra_mtc.bin | awk '{ print $1 }')" -ne "edb32e3f9ed15b55e780e8a01ef927a3b8a1f25b34a6f95467041d8953777d21" ]; then
+    if [ "$(sha256 tegra_mtc.bin)" -ne "edb32e3f9ed15b55e780e8a01ef927a3b8a1f25b34a6f95467041d8953777d21" ]; then
         echo "ERROR: tegra_mtc.bin does not match stored SHA256 sum"
         exit 1
     fi
