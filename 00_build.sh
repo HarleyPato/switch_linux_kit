@@ -1,23 +1,26 @@
 #!/bin/bash
-set -x
+#set -x
 set -e
 set -u
 
+# Global variables
 NPROC=$(grep -c ^processor /proc/cpuinfo)
 export NPROC
 
 CROSS_COMPILE=aarch64-linux-gnu-
 export CROSS_COMPILE
 
-SHA256_RYU_OPM=8f7df21829368e87123f55f8954f8b8edb52c0f77cb4a504c783dad7637dd8f4
-ZIPNAME_RYU_OPM=ryu-opm1.171019.026-factory-8f7df218.zip
-URL_RYU_OPM=https://dl.google.com/dl/android/aosp/ryu-opm1.171019.026-factory-8f7df218.zip
-DIRNAME_RYU_OPM=ryu-opm1.171019.026
-SHA256_SMAUG=ed121ba1f5dbbf756f2b0b559fef97b2def88afa9217916686aa88c8c2760ce9
-IMGNAME_SMAUG=bootloader-dragon-google_smaug.7900.97.0.img
-
 ROOTDIR=/source
 
+# Pixel C factory image metadata
+SHA256_RYU_OPM=8f7df21829368e87123f55f8954f8b8edb52c0f77cb4a504c783dad7637dd8f4
+SHA256_SMAUG=ed121ba1f5dbbf756f2b0b559fef97b2def88afa9217916686aa88c8c2760ce9
+URL_RYU_OPM=https://dl.google.com/dl/android/aosp/ryu-opm1.171019.026-factory-8f7df218.zip
+ZIPNAME_RYU_OPM=ryu-opm1.171019.026-factory-8f7df218.zip
+DIRNAME_RYU_OPM=ryu-opm1.171019.026
+IMGNAME_SMAUG=bootloader-dragon-google_smaug.7900.97.0.img
+
+# Helper functions
 make() {
     /usr/bin/make -j"${NPROC}" "$@"
 }
@@ -31,6 +34,8 @@ copy_products() {
         cp "${product}" "${ROOTDIR}/product"
     done
 }
+
+# FIXME: Add a function here that prints things in green, to replace our echo calls below
 
 # Get ourselves in the right place
 cd "${ROOTDIR}"
@@ -119,6 +124,8 @@ build_linux() {
     copy_products arch/arm64/boot/Image.gz arch/arm64/boot/dts/nvidia/tegra210-nintendo-switch.dtb
     popd
 }
+
+# FIXME: Add a rootfs builder here
 
 build_all() {
     fetch_tegra_ram_trainer
