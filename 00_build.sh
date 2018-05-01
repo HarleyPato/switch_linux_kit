@@ -6,6 +6,9 @@ set -u
 NPROC=$(grep -c ^processor /proc/cpuinfo)
 export NPROC
 
+CROSS_COMPILE=aarch64-linux-gnu-
+export CROSS_COMPILE
+
 fetch_tegra_ram_trainer() {
     echo "Checking Tegra RAM trainer blob..."
     cd /source
@@ -28,7 +31,6 @@ build_uboot() {
     echo "Building u-boot..."
     cd /source
     cd u-boot
-    export CROSS_COMPILE=aarch64-linux-gnu-
     make nintendo-switch_defconfig
     make -j"${NPROC}"
 }
