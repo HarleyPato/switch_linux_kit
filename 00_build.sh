@@ -26,6 +26,12 @@ sha256() {
     sha256sum "$1" | awk '{ print $1 }'
 }
 
+copy_products() {
+    for product in "$@" ; do
+        cp "${product}" "${ROOTDIR}/product"
+    done
+}
+
 # Get ourselves in the right place
 cd "${ROOTDIR}"
 
@@ -50,14 +56,10 @@ build_exploit() {
     echo "Building shofel2 exploit..."
     pushd "${ROOTDIR}/shofel2/exploit"
     make
-    for product in "shofel2.py" "cbfs.bin" ; do
-        cp "${product}" "${ROOTDIR}/product"
-    done
+    copy_products shofel2.py cbfs.bin
     popd
     pushd "${ROOTDIR}/shofel2/usb_loader"
-    for product in "switch.scr" "switch.conf" "imx_usb.conf" ; do
-        cp "${product}" "${ROOTDIR}/product"
-    done
+    copy_products switch.scr switch.conf imx_usb.conf
     popd
 }
 
@@ -66,9 +68,7 @@ build_uboot() {
     pushd "${ROOTDIR}/u-boot"
     make nintendo-switch_defconfig
     make
-    for product in "tools/mkimage" ; do
-        cp "${product}" "${ROOTDIR}/product"
-    done
+    copy_products tools/mkimage
     popd
 }
 
@@ -98,9 +98,7 @@ build_coreboot() {
     fi
 
     make
-    for product in "build/coreboot.rom" ; do
-        cp "${product}" "${ROOTDIR}/product"
-    done
+    copy_products build/coreboot.rom
     popd
 }
 
@@ -108,9 +106,7 @@ build_imx_loader() {
     echo "Building imx loader..."
     pushd "${ROOTDIR}/imx_usb_loader"
     make
-    for product in "imx_usb" ; do
-        cp "${product}" "${ROOTDIR}/product"
-    done
+    copy_products imx_usb
     popd
 }
 
@@ -120,9 +116,7 @@ build_linux() {
     export ARCH=arm64
     make nintendo-switch_defconfig
     make
-    for product in "arch/arm64/boot/Image.gz" "arch/arm64/boot/dts/nvidia/tegra210-nintendo-switch.dtb" ; do
-        cp "${product}" "${ROOTDIR}/product"
-    done
+    copy_products arch/arm64/boot/Image.gz arch/arm64/boot/dts/nvidia/tegra210-nintendo-switch.dtb
     popd
 }
 
