@@ -46,7 +46,7 @@ mypopd() {
 }
 
 myecho() {
-    echo "$@" | taa -a "${BUILDLOG}"
+    echo "$@" | tee -a "${BUILDLOG}"
 }
 
 # FIXME: Add a function here that prints things in green, to replace our echo calls below
@@ -61,11 +61,11 @@ fetch_tegra_ram_trainer() {
         myecho "Fetching Tegra RAM trainer blob..."
         if ! [ -f "${ZIPNAME_RYU_OPM}" ] || [ "$(sha256 "${ZIPNAME_RYU_OPM}")" != "${SHA256_RYU_OPM}" ]; then
             rm -rf "${DIRNAME_RYU_OPM}" "${ZIPNAME_RYU_OPM}"
-            wget "${URL_RYU_OPM}"
+            wget "${URL_RYU_OPM}" >> "${BUILDLOG}"
         fi
         if ! [ -f "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" ] || [ "$(sha256 "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}")" != "${SHA256_SMAUG}" ]; then
             rm -rf "${DIRNAME_RYU_OPM}"
-            unzip "${ZIPNAME_RYU_OPM}"
+            unzip "${ZIPNAME_RYU_OPM}" >> "${BUILDLOG}"
         fi
     fi
     mypopd
@@ -103,7 +103,7 @@ build_coreboot() {
 
     if ! [ -f ../vendor/tegra_mtc.bin ]; then
         myecho "  Extracting Tegra RAM trainer blob from Pixel C factory restore image..."
-        ./util/cbfstool/cbfstool "../vendor/${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" extract -n fallback/tegra_mtc -f tegra_mtc.bin
+        ./util/cbfstool/cbfstool "../vendor/${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" extract -n fallback/tegra_mtc -f tegra_mtc.bin >> "${BUILDLOG}"
         cp tegra_mtc.bin ../vendor
     fi
 
