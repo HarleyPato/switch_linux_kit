@@ -12,6 +12,9 @@ export CROSS_COMPILE
 SHA256_RYU_OPM=8f7df21829368e87123f55f8954f8b8edb52c0f77cb4a504c783dad7637dd8f4
 ZIPNAME_RYU_OPM=ryu-opm1.171019.026-factory-8f7df218.zip
 URL_RYU_OPM=https://dl.google.com/dl/android/aosp/ryu-opm1.171019.026-factory-8f7df218.zip
+DIRNAME_RYU_OPM=ryu-opm1.171019.026
+SHA256_SMAUG=??
+IMGNAME_SMAUG=bootloader-dragon-google_smaug.7900.97.0.img
 
 make() {
     /usr/bin/make -j"${NPROC}" "$@"
@@ -27,11 +30,15 @@ fetch_tegra_ram_trainer() {
     if ! [ -f tegra_mtc.bin ]; then
         echo "Fetching Tegra RAM trainer blob..."
         if [ -f "${ZIPNAME_RYU_OPM}" ] && [ "$(sha256 "${ZIPNAME_RYU_OPM}")" != "${SHA256_RYU_OPM}" ]; then
-            rm -rf ryu-opm1.171019.026*
+            rm -rf "${DIRNAME_RYU_OPM}" "${ZIPNAME_RYU_OPM}"
+            wget "${URL_RYU_OPM}"
         fi
-        wget -N "${URL_RYU_OPM}"
-        unzip "${ZIPNAME_RYU_OPM}"
-        mv ryu-opm1.171019.026/bootloader-dragon-google_smaug.7900.97.0.img .
+        if [ -f "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" ] && [ "$(sha256 "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}")" != "${SHA256_SMAUG}" ]; then
+            rm -rf "${DIRNAME_RYU_OPM}"
+        fi
+        if ! [ -f "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" ]; then
+            unzip "${ZIPNAME_RYU_OPM}"
+        fi
     fi
 }
 
@@ -73,7 +80,7 @@ build_coreboot() {
 
     if ! [ -f ../tegra_mtc.bin ]; then
         "  Extracting Tegra RAM trainer blob from Pixel C factory restore image..."
-        ./util/cbfstool/cbfstool ../bootloader-dragon-google_smaug.7900.97.0.img extract -n fallback/tegra_mtc -f tegra_mtc.bin
+        ./util/cbfstool/cbfstool "../${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" extract -n fallback/tegra_mtc -f tegra_mtc.bin
         cp tegra_mtc.bin ..
     fi
 
