@@ -120,7 +120,7 @@ build_linux() {
     export ARCH=arm64
     make nintendo-switch_defconfig
     make
-    for product in "arch/arm64/boot/Image.gz" "linux/arch/arm64/boot/dts/nvidia/tegra210-nintendo-switch.dtb" ; do
+    for product in "arch/arm64/boot/Image.gz" "arch/arm64/boot/dts/nvidia/tegra210-nintendo-switch.dtb" ; do
         cp "${product}" "${ROOTDIR}/product"
     done
     popd
