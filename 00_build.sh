@@ -67,7 +67,7 @@ build_coreboot() {
 
     if ! [ -f ../vendor/tegra_mtc.bin ]; then
         echo "  Extracting Tegra RAM trainer blob from Pixel C factory restore image..."
-        ./util/cbfstool/cbfstool "../${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" extract -n fallback/tegra_mtc -f tegra_mtc.bin
+        ./util/cbfstool/cbfstool "../vendor/${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" extract -n fallback/tegra_mtc -f tegra_mtc.bin
         cp tegra_mtc.bin ../vendor
     fi
 
