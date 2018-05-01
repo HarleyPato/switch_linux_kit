@@ -76,7 +76,7 @@ build_coreboot() {
         cp ../tegra_mtc.bin .
     fi
 
-    if [ "$(sha256 tegra_mtc.bin)" -ne "edb32e3f9ed15b55e780e8a01ef927a3b8a1f25b34a6f95467041d8953777d21" ]; then
+    if [ "$(sha256 tegra_mtc.bin)" != "edb32e3f9ed15b55e780e8a01ef927a3b8a1f25b34a6f95467041d8953777d21" ]; then
         echo "ERROR: tegra_mtc.bin does not match stored SHA256 sum"
         exit 1
     fi
