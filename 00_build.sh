@@ -16,6 +16,8 @@ DIRNAME_RYU_OPM=ryu-opm1.171019.026
 SHA256_SMAUG=ed121ba1f5dbbf756f2b0b559fef97b2def88afa9217916686aa88c8c2760ce9
 IMGNAME_SMAUG=bootloader-dragon-google_smaug.7900.97.0.img
 
+ROOTDIR=/source
+
 make() {
     /usr/bin/make -j"${NPROC}" "$@"
 }
@@ -24,9 +26,12 @@ sha256() {
     sha256sum "$1" | awk '{ print $1 }'
 }
 
+# Get ourselves in the right place
+cd "${ROOTDIR}"
+
 fetch_tegra_ram_trainer() {
     echo "Checking Tegra RAM trainer blob..."
-    cd /source/vendor
+    pushd "${ROOTDIR}/vendor"
     if ! [ -f tegra_mtc.bin ]; then
         echo "Fetching Tegra RAM trainer blob..."
         if ! [ -f "${ZIPNAME_RYU_OPM}" ] || [ "$(sha256 "${ZIPNAME_RYU_OPM}")" != "${SHA256_RYU_OPM}" ]; then
@@ -38,27 +43,38 @@ fetch_tegra_ram_trainer() {
             unzip "${ZIPNAME_RYU_OPM}"
         fi
     fi
-    cd ..
+    popd
 }
 
 build_exploit() {
     echo "Building shofel2 exploit..."
-    cd shofel2/exploit
+    pushd "${ROOTDIR}/shofel2/exploit"
     make
+    for product in "shofel2.py" "cbfs.bin" ; do
+        cp "${product}" "${ROOTDIR}/product"
+    done
+    popd
+    pushd "${ROOTDIR}/shofel2/usb_loader"
+    for product in "switch.scr" "switch.conf" "imx_usb.conf" ; do
+        cp "${product}" "${ROOTDIR}/product"
+    done
+    popd
 }
 
 build_uboot() {
     echo "Building u-boot..."
-    cd /source
-    cd u-boot
+    pushd "${ROOTDIR}/u-boot"
     make nintendo-switch_defconfig
     make
+    for product in "tools/mkimage" ; do
+        cp "${product}" "${ROOTDIR}/product"
+    done
+    popd
 }
 
 build_coreboot() {
     echo "Building coreboot..."
-    cd /source
-    cd coreboot
+    pushd "${ROOTDIR}/coreboot"
     make nintendo_switch_defconfig
     make iasl
     pushd util/cbfstool
@@ -81,22 +97,30 @@ build_coreboot() {
     fi
 
     make
+    for product in "build/coreboot.rom" ; do
+        cp "${product}" "${ROOTDIR}/product"
+    done
+    popd
 }
 
 build_imx_loader() {
     echo "Building imx loader..."
-    cd /source
-    cd imx_usb_loader
+    pushd "${ROOTDIR}/imx_usb_loader"
     make
+    for product in "imx_usb" ; do
+        cp "${product}" "${ROOTDIR}/product"
+    done
+    popd
 }
 
 build_linux() {
     echo "Building Linux..."
-    cd /source
-    cd linux
+    pushd "${ROOTDIR}/linux"
     export ARCH=arm64
     make nintendo-switch_defconfig
     make
+    # FIXME: Copy out the Image.gz and DTB to product dir
+    popd
 }
 
 build_all() {
