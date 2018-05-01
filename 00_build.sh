@@ -9,6 +9,10 @@ export NPROC
 CROSS_COMPILE=aarch64-linux-gnu-
 export CROSS_COMPILE
 
+SHA256_RYU_OPM=8f7df21829368e87123f55f8954f8b8edb52c0f77cb4a504c783dad7637dd8f4
+ZIPNAME_RYU_OPM=ryu-opm1.171019.026-factory-8f7df218.zip
+URL_RYU_OPM=https://dl.google.com/dl/android/aosp/ryu-opm1.171019.026-factory-8f7df218.zip
+
 make() {
     /usr/bin/make -j"${NPROC}" "$@"
 }
@@ -22,11 +26,11 @@ fetch_tegra_ram_trainer() {
     cd /source
     if ! [ -f tegra_mtc.bin ]; then
         echo "Fetching Tegra RAM trainer blob..."
-        if [ -f ryu-opm1.171019.026-factory-8f7df218.zip -a "$(sha256 ryu-opm1.171019.026-factory-8f7df218.zip)" != "bdf9a76e52a4ab6e90fed077ffea2d39975df6f9c6fe56e628ed379ff708fe98" ]; then
-            rm -f ryu-opm1.171019.026-factory-8f7df218.zip ryu-opm1.171019.026
+        if [ -f "${ZIPNAME_RYU_OPM}" ] && [ "$(sha256 "${ZIPNAME_RYU_OPM}")" != "${SHA256_RYU_OPM}" ]; then
+            rm -rf ryu-opm1.171019.026*
         fi
-        wget -N https://dl.google.com/dl/android/aosp/ryu-opm1.171019.026-factory-8f7df218.zip
-        unzip ryu-opm1.171019.026-factory-8f7df218.zip
+        wget -N "${URL_RYU_OPM}"
+        unzip "${ZIPNAME_RYU_OPM}"
         mv ryu-opm1.171019.026/bootloader-dragon-google_smaug.7900.97.0.img .
     fi
 }
