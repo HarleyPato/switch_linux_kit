@@ -98,3 +98,5 @@ build_all() {
     build_imx_loader
     build_linux
 }
+
+build_all
