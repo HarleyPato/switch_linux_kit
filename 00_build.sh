@@ -9,6 +9,10 @@ export NPROC
 CROSS_COMPILE=aarch64-linux-gnu-
 export CROSS_COMPILE
 
+make() {
+    /usr/bin/make -j"${NPROC}" "$@"
+}
+
 sha256() {
     sha256sum "$1" | awk '{ print $1 }'
 }
@@ -30,7 +34,7 @@ fetch_tegra_ram_trainer() {
 build_exploit() {
     echo "Building shofel2 exploit..."
     cd shofel2/exploit
-    make -j"${NPROC}"
+    make
 }
 
 build_uboot() {
@@ -38,7 +42,7 @@ build_uboot() {
     cd /source
     cd u-boot
     make nintendo-switch_defconfig
-    make -j"${NPROC}"
+    make
 }
 
 build_recore() {
@@ -76,7 +80,7 @@ build_coreboot() {
         exit 1
     fi
 
-    make -j"${NPROC}"
+    make
 }
 
 build_imx_loader() {
@@ -85,7 +89,7 @@ build_imx_loader() {
     cd imx_usb_loader
     # why?
     # git reset --hard 0a322b01cacf03e3be727e3e4c3d46d69f2e343e
-    make -j"${NPROC}"
+    make
 }
 
 build_linux() {
@@ -95,7 +99,7 @@ build_linux() {
     export ARCH=arm64
     export CROSS_COMPILE=aarch64-linux-gnu- #useless
     make nintendo-switch_defconfig
-    make -j"${NPROC}"
+    make
 }
 
 build_all() {
