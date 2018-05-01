@@ -63,7 +63,9 @@ build_coreboot() {
     cd coreboot
     make nintendo_switch_defconfig
     make iasl
-    make util/cbfstool/cbfstool
+    pushd util/cbfstool
+    make cbfstool
+    popd
 
     if ! [ -f ../tegra_mtc.bin ]; then
         "  Extracting Tegra RAM trainer blob from Pixel C factory restore image..."
