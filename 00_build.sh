@@ -75,6 +75,7 @@ build_uboot() {
 build_coreboot() {
     echo "Building coreboot..."
     pushd "${ROOTDIR}/coreboot"
+    make distclean # coreboot doesn't seem to take kindly to being rebuilt without a good clean first
     make nintendo_switch_defconfig
     make iasl
     pushd util/cbfstool
