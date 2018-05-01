@@ -3,16 +3,14 @@ Build Linux for Nintendo Switch from Sourcecode using [Docker Toolchain](https:/
 
 ### Cloning
 ```
-git clone https://github.com/Nold360/switch_linux_kit
+git clone https://github.com/cmsj/switch_linux_kit
 cd switch_linux_kit
 git submodule update --init
 ```
 
 ### Compiling
-***Note:*** You'll still need to get `coreboot/tegra_mtc.bin` on your own.
-
 ```
-docker run -ti --rm -v$(pwd):/source nold360/switch_linux_toolchain bash 00_build.sh
+docker run -ti --rm -v$(pwd):/source cmsj/aarch64_toolchain bash 00_build.sh
 ```
 
 ### Profit!
