@@ -56,18 +56,6 @@ build_uboot() {
     make
 }
 
-build_recore() {
-    echo "Building cbfstool..."
-    cd /source
-    cd librecore-utils
-    mkdir build || true
-    cd build
-    cmake ..
-    make
-    #make install #needed?!
-    #./build/util/cbfstool/cbfstool bootloader-dragon-google_smaug.7900.97.0.img extract -n fallback/tegra_mtc -f tegra_mtc.bin
-}
-
 build_coreboot() {
     echo "Building coreboot..."
     cd /source
@@ -100,8 +88,6 @@ build_imx_loader() {
     echo "Building imx loader..."
     cd /source
     cd imx_usb_loader
-    # why?
-    # git reset --hard 0a322b01cacf03e3be727e3e4c3d46d69f2e343e
     make
 }
 
@@ -110,7 +96,6 @@ build_linux() {
     cd /source
     cd linux
     export ARCH=arm64
-    export CROSS_COMPILE=aarch64-linux-gnu- #useless
     make nintendo-switch_defconfig
     make
 }
@@ -119,7 +104,6 @@ build_all() {
     fetch_tegra_ram_trainer
     build_exploit
     build_uboot
-#    build_recore
     build_coreboot
     build_imx_loader
     build_linux
