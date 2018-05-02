@@ -50,6 +50,8 @@ myecho() {
 }
 
 # FIXME: Add a function here that prints things in green, to replace our echo calls below
+# FIXME: Add a trap function that cats build.log when an error happens: https://stackoverflow.com/questions/35800082/how-to-trap-err-when-using-set-e-in-bash
+# FIXME: Switch the submodules of this repo to my forks where appropriate
 
 # Get ourselves in the right place
 cd "${ROOTDIR}"
@@ -57,85 +59,86 @@ cd "${ROOTDIR}"
 fetch_tegra_ram_trainer() {
     myecho "Checking Tegra RAM trainer blob..."
     mypushd "${ROOTDIR}/vendor"
-    if ! [ -f tegra_mtc.bin ]; then
-        myecho "Fetching Tegra RAM trainer blob..."
-        if ! [ -f "${ZIPNAME_RYU_OPM}" ] || [ "$(sha256 "${ZIPNAME_RYU_OPM}")" != "${SHA256_RYU_OPM}" ]; then
-            rm -rf "${DIRNAME_RYU_OPM}" "${ZIPNAME_RYU_OPM}"
-            wget "${URL_RYU_OPM}" >> "${BUILDLOG}"
+        if ! [ -f tegra_mtc.bin ]; then
+            if ! [ -f "${ZIPNAME_RYU_OPM}" ] || [ "$(sha256 "${ZIPNAME_RYU_OPM}")" != "${SHA256_RYU_OPM}" ]; then
+                myecho "Fetching Tegra RAM trainer blob..."
+                rm -rf "${DIRNAME_RYU_OPM}" "${ZIPNAME_RYU_OPM}"
+                wget "${URL_RYU_OPM}" >> "${BUILDLOG}"
+            fi
+            if ! [ -f "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" ] || [ "$(sha256 "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}")" != "${SHA256_SMAUG}" ]; then
+                myecho "Unpacking Tegra RAM trainer blob..."
+                rm -rf "${DIRNAME_RYU_OPM}"
+                unzip "${ZIPNAME_RYU_OPM}" >> "${BUILDLOG}"
+            fi
         fi
-        if ! [ -f "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" ] || [ "$(sha256 "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}")" != "${SHA256_SMAUG}" ]; then
-            rm -rf "${DIRNAME_RYU_OPM}"
-            unzip "${ZIPNAME_RYU_OPM}" >> "${BUILDLOG}"
-        fi
-    fi
     mypopd
 }
 
 build_exploit() {
     myecho "Building shofel2 exploit..."
     mypushd "${ROOTDIR}/shofel2/exploit"
-    make
-    copy_products shofel2.py cbfs.bin
+        make
+        copy_products shofel2.py cbfs.bin
     mypopd
     mypushd "${ROOTDIR}/shofel2/usb_loader"
-    copy_products switch.scr switch.conf imx_usb.conf
+        copy_products switch.scr switch.conf imx_usb.conf
     mypopd
 }
 
 build_uboot() {
     myecho "Building u-boot..."
     mypushd "${ROOTDIR}/u-boot"
-    make nintendo-switch_defconfig
-    make
-    copy_products tools/mkimage
+        make nintendo-switch_defconfig
+        make
+        copy_products tools/mkimage
     mypopd
 }
 
 build_coreboot() {
     myecho "Building coreboot..."
     mypushd "${ROOTDIR}/coreboot"
-    make distclean # coreboot doesn't seem to take kindly to being rebuilt without a good clean first
-    make nintendo_switch_defconfig
-    make iasl
-    mypushd util/cbfstool
-    make cbfstool
-    mypopd
+        make distclean # coreboot doesn't seem to take kindly to being rebuilt without a good clean first
+        make nintendo_switch_defconfig
+        make iasl
+        mypushd util/cbfstool
+            make cbfstool
+        mypopd
 
-    if ! [ -f ../vendor/tegra_mtc.bin ]; then
-        myecho "  Extracting Tegra RAM trainer blob from Pixel C factory restore image..."
-        ./util/cbfstool/cbfstool "../vendor/${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" extract -n fallback/tegra_mtc -f tegra_mtc.bin >> "${BUILDLOG}"
-        cp tegra_mtc.bin ../vendor
-    fi
+        if ! [ -f ../vendor/tegra_mtc.bin ]; then
+            myecho "  Extracting Tegra RAM trainer blob from Pixel C factory restore image..."
+            ./util/cbfstool/cbfstool "../vendor/${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" extract -n fallback/tegra_mtc -f tegra_mtc.bin >> "${BUILDLOG}"
+            cp tegra_mtc.bin ../vendor
+        fi
 
-    if ! [ -f tegra_mtc.bin ]; then
-        cp ../vendor/tegra_mtc.bin .
-    fi
+        if ! [ -f tegra_mtc.bin ]; then
+            cp ../vendor/tegra_mtc.bin .
+        fi
 
-    if [ "$(sha256 tegra_mtc.bin)" != "edb32e3f9ed15b55e780e8a01ef927a3b8a1f25b34a6f95467041d8953777d21" ]; then
-        myecho "ERROR: tegra_mtc.bin does not match stored SHA256 sum"
-        exit 1
-    fi
+        if [ "$(sha256 tegra_mtc.bin)" != "edb32e3f9ed15b55e780e8a01ef927a3b8a1f25b34a6f95467041d8953777d21" ]; then
+            myecho "ERROR: tegra_mtc.bin does not match stored SHA256 sum"
+            exit 1
+        fi
 
-    make
-    copy_products build/coreboot.rom
+        make
+        copy_products build/coreboot.rom
     mypopd
 }
 
 build_imx_loader() {
     myecho "Building imx loader..."
     mypushd "${ROOTDIR}/imx_usb_loader"
-    make
-    copy_products imx_usb
+        make
+        copy_products imx_usb
     mypopd
 }
 
 build_linux() {
     myecho "Building Linux..."
     mypushd "${ROOTDIR}/linux"
-    export ARCH=arm64
-    make nintendo-switch_defconfig
-    make
-    copy_products arch/arm64/boot/Image.gz arch/arm64/boot/dts/nvidia/tegra210-nintendo-switch.dtb
+        export ARCH=arm64
+        make nintendo-switch_defconfig
+        make
+        copy_products arch/arm64/boot/Image.gz arch/arm64/boot/dts/nvidia/tegra210-nintendo-switch.dtb
     mypopd
 }
 
