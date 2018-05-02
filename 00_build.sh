@@ -29,9 +29,11 @@ ZIPNAME_RYU_OPM=ryu-opm1.171019.026-factory-8f7df218.zip
 DIRNAME_RYU_OPM=ryu-opm1.171019.026
 IMGNAME_SMAUG=bootloader-dragon-google_smaug.7900.97.0.img
 
+TSFMT='[%Y-%m-%d %H:%M:%S]'
+
 # Helper functions
 make() {
-    /usr/bin/make -j"${NPROC}" "$@" >> "${BUILDLOG}" 2>&1
+    /usr/bin/make -j"${NPROC}" "$@" | ts "${TSFMT}" >> "${BUILDLOG}" 2>&1
 }
 
 sha256() {
@@ -40,20 +42,20 @@ sha256() {
 
 copy_products() {
     for product in "$@" ; do
-        cp "${product}" "${ROOTDIR}/product"
+        cp -v "${product}" "${ROOTDIR}/product" | ts "${TSFMT}" >> "${BUILDLOG}"
     done
 }
 
 mypushd() {
-    pushd "$1" >> "${BUILDLOG}" 2>&1
+    pushd "$1" | ts "${TSFMT}" >> "${BUILDLOG}" 2>&1
 }
 
 mypopd() {
-    popd >> "${BUILDLOG}" 2>&1
+    popd | ts "${TSFMT}" >> "${BUILDLOG}" 2>&1
 }
 
 myecho() {
-    echo "$@" | tee -a "${BUILDLOG}"
+    echo "$@" | ts "${TSFMT}" | tee -a "${BUILDLOG}"
 }
 
 # Get ourselves in the right place
@@ -66,12 +68,12 @@ fetch_tegra_ram_trainer() {
             if ! [ -f "${ZIPNAME_RYU_OPM}" ] || [ "$(sha256 "${ZIPNAME_RYU_OPM}")" != "${SHA256_RYU_OPM}" ]; then
                 myecho "Fetching Tegra RAM trainer blob..."
                 rm -rf "${DIRNAME_RYU_OPM}" "${ZIPNAME_RYU_OPM}"
-                wget "${URL_RYU_OPM}" >> "${BUILDLOG}"
+                wget "${URL_RYU_OPM}" | ts "${TSFMT}" >> "${BUILDLOG}"
             fi
             if ! [ -f "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" ] || [ "$(sha256 "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}")" != "${SHA256_SMAUG}" ]; then
                 myecho "Unpacking Tegra RAM trainer blob..."
                 rm -rf "${DIRNAME_RYU_OPM}"
-                unzip "${ZIPNAME_RYU_OPM}" >> "${BUILDLOG}"
+                unzip "${ZIPNAME_RYU_OPM}" | ts "${TSFMT}" >> "${BUILDLOG}"
             fi
         fi
     mypopd
@@ -109,7 +111,7 @@ build_coreboot() {
 
         if ! [ -f ../vendor/tegra_mtc.bin ]; then
             myecho "  Extracting Tegra RAM trainer blob from Pixel C factory restore image..."
-            ./util/cbfstool/cbfstool "../vendor/${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" extract -n fallback/tegra_mtc -f tegra_mtc.bin >> "${BUILDLOG}"
+            ./util/cbfstool/cbfstool "../vendor/${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" extract -n fallback/tegra_mtc -f tegra_mtc.bin | ts "${TSFMT}" >> "${BUILDLOG}"
             cp tegra_mtc.bin ../vendor
         fi
 
