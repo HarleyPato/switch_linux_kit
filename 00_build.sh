@@ -58,7 +58,8 @@ mypopd() {
 }
 
 myecho() {
-    echo "${COLOR_GREEN}${*}${COLOR_NORM}" | tee -a "${BUILDLOG}"
+    echo "${COLOR_GREEN}${*}${COLOR_NORM}"
+    echo "$@" >> "${BUILDLOG}"
 }
 
 # Get ourselves in the right place
