@@ -47,11 +47,11 @@ copy_products() {
 }
 
 mypushd() {
-    pushd "$1" | ts "${TSFMT}" >> "${BUILDLOG}" 2>&1
+    pushd "$1" >> "${BUILDLOG}" 2>&1
 }
 
 mypopd() {
-    popd | ts "${TSFMT}" >> "${BUILDLOG}" 2>&1
+    popd  >> "${BUILDLOG}" 2>&1
 }
 
 myecho() {
