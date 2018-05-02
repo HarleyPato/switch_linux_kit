@@ -1,18 +1,30 @@
 #!/bin/bash
 #set -x
-set -e
+set -eE
 set -u
 
-# Global variables
-NPROC=$(grep -c ^processor /proc/cpuinfo)
-export NPROC
+# Useful colors
+COLOR_RED='\033[0;31m'
+COLOR_GREEN='033[0;32m'
+COLOR_NORM='\033[0m]'
 
+# Global variables
 CROSS_COMPILE=aarch64-linux-gnu-
 export CROSS_COMPILE
 
 ROOTDIR=/source
 BUILDLOG="${ROOTDIR}/build.log"
 echo "" > "${BUILDLOG}"
+
+function build_failed() {
+    echo "${COLOR_RED}ERROR: Build failed. Build log follows:${COLOR_NORM}"
+    cat "${BUILDLOG}"
+}
+
+trap build_failed ERR
+
+NPROC=$(grep -c ^processor /proc/cpuinfo)
+export NPROC
 
 # Pixel C factory image metadata
 SHA256_RYU_OPM=8f7df21829368e87123f55f8954f8b8edb52c0f77cb4a504c783dad7637dd8f4
@@ -46,12 +58,8 @@ mypopd() {
 }
 
 myecho() {
-    echo "$@" | tee -a "${BUILDLOG}"
+    echo "${COLOR_GREEN}${*}${COLOR_NORM}" | tee -a "${BUILDLOG}"
 }
-
-# FIXME: Add a function here that prints things in green, to replace our echo calls below
-# FIXME: Add a trap function that cats build.log when an error happens: https://stackoverflow.com/questions/35800082/how-to-trap-err-when-using-set-e-in-bash
-# FIXME: Switch the submodules of this repo to my forks where appropriate
 
 # Get ourselves in the right place
 cd "${ROOTDIR}"
