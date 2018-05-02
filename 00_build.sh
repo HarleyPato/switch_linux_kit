@@ -3,11 +3,6 @@
 set -eE
 set -u
 
-# Useful colors
-COLOR_RED='\033[0;31m'
-COLOR_GREEN='033[0;32m'
-COLOR_NORM='\033[0m]'
-
 # Global variables
 CROSS_COMPILE=aarch64-linux-gnu-
 export CROSS_COMPILE
@@ -17,7 +12,7 @@ BUILDLOG="${ROOTDIR}/build.log"
 echo "" > "${BUILDLOG}"
 
 function build_failed() {
-    echo "${COLOR_RED}ERROR: Build failed. Build log follows:${COLOR_NORM}"
+    echo "ERROR: Build failed. Build log follows:"
     cat "${BUILDLOG}"
 }
 
@@ -58,8 +53,7 @@ mypopd() {
 }
 
 myecho() {
-    echo "${COLOR_GREEN}${*}${COLOR_NORM}"
-    echo "$@" >> "${BUILDLOG}"
+    echo "$@" | tee -a "${BUILDLOG}"
 }
 
 # Get ourselves in the right place
