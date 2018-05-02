@@ -13,6 +13,3 @@
 [submodule "imx_usb_loader"]
 	path = imx_usb_loader
 	url = https://github.com/boundarydevices/imx_usb_loader.git
-[submodule "librecore-utils"]
-	path = librecore-utils
-	url = https://github.com/librecore-org/librecore-utils
