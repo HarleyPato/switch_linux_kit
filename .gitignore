@@ -1,5 +1,6 @@
 build.log
 exploit.log
 product/*
+rootfs
 vendor/tegra_mtc.bin
 vendor/ryu-*
