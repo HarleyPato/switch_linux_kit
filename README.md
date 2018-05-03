@@ -1,11 +1,16 @@
-### Switch Linux Kit
-Build Linux for Nintendo Switch from Sourcecode using [Docker Toolchain](https://hub.docker.com/r/cmsj/aarch64_toolchain/)
+### Unofficial Ubuntu builder for Nintendo Switch
+This repo allows you to build the exploit, bootloaders, kernel and root filesystem for running Ubuntu on a Nintendo Switch.
+
+Note that this is an unofficial project and is not connected to, or endorsed by, Ubuntu. All trademarks are deeply loved.
+
+Also note that the [build toolchain](https://hub.docker.com/r/cmsj/aarch64_toolchain/) is based around Docker, so you should have Docker installed.
 
 ### Cloning
 ```
 git clone https://github.com/cmsj/switch_linux_kit
 cd switch_linux_kit
 git submodule update --init
+docker pull cmsj/aarch64_toolchain
 ```
 
 ### Compiling
@@ -13,11 +18,13 @@ git submodule update --init
 docker run -ti --rm -v$(pwd):/source cmsj/aarch64_toolchain bash 00_build.sh
 ```
 
+The build script is pretty modular, so with some simple edits you could choose to build just the exploit chain, bootloader, kernel, rootfs, etc. if you so desire.
+
 ### Micro SD Card Preparation
 
 You need a microSD card with a Linux root filesystem on it (see previous step), and that rootfs needs to include the following files in /boot:
- * Image.gz (Linux kernel - found in arch/arm64/boot/ in a built kernel)
- * tegra210-nintendo-switch.dtb (Device Tree binary - found in arch/arm64/boot/dts/nvidia/ in a built kernel)
+ * `Image.gz` (Linux kernel - found in `product/` after the build has finished)
+ * `tegra210-nintendo-switch.dtb` (Device Tree binary - found in `product/` after the build has finished)
 
 The steps for creating such a card would be:
  * Create a new Master Boot Record (MBR) on an SD card
@@ -30,7 +37,7 @@ Note that many of the community provided Linux rootfs images for the Switch do n
 
 ### Running
 
-Attach your Switch to USB, trigger the hardware exploit, and run:
+Attach your Switch to USB, trigger the hardware exploit (ie short pin 10 of the right joycon slot, to ground), and run:
 ```
 sudo ./02_boot_linux.sh
 
