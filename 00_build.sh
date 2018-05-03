@@ -151,7 +151,7 @@ build_rootfs() {
     myecho "Building Ubuntu filesystem..."
     mkdir -p "${ROOTDIR}/rootfs"
     mypushd "${ROOTDIR}/rootfs"
-        sudo ../ubuntu_builder/build-image.sh .
+        ../ubuntu_builder/build-image.sh . 2>&1 | tee -a "${BUILDLOG}"
     mypopd
 }
 
