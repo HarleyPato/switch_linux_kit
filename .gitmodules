@@ -13,3 +13,9 @@
 [submodule "imx_usb_loader"]
 	path = imx_usb_loader
 	url = https://github.com/boundarydevices/imx_usb_loader.git
+[submodule "aarch64_toolchain"]
+	path = aarch64_toolchain
+	url = https://github.com/cmsj/aarch64_toolchain_docker
+[submodule "ubuntu_builder"]
+	path = ubuntu_builder
+	url = https://github.com/cmsj/nintendo-switch-ubuntu-builder.git
