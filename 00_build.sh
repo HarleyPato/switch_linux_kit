@@ -147,7 +147,13 @@ build_linux() {
     mypopd
 }
 
-# FIXME: Add a rootfs builder here
+build_rootfs() {
+    myecho "Building Ubuntu filesystem..."
+    mkdir -p "${ROOTDIR}/rootfs"
+    mypushd "${ROOTDIR}/rootfs"
+        sudo ../ubuntu_builder/build-image.sh .
+    mypopd
+}
 
 build_all() {
     fetch_tegra_ram_trainer
@@ -156,6 +162,7 @@ build_all() {
     build_coreboot
     build_imx_loader
     build_linux
+    build_rootfs
 }
 
 build_all
