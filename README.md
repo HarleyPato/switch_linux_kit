@@ -15,7 +15,7 @@ docker pull cmsj/aarch64_toolchain
 
 ### Compiling
 ```
-docker run -ti --rm -v$(pwd):/source cmsj/aarch64_toolchain bash 00_build.sh
+docker run --privileged -ti --rm -v$(pwd):/source cmsj/aarch64_toolchain bash 00_build.sh
 ```
 
 The build script is pretty modular, so with some simple edits you could choose to build just the exploit chain, bootloader, kernel, rootfs, etc. if you so desire.
@@ -30,7 +30,8 @@ The steps for creating such a card would be:
  * Create a new Master Boot Record (MBR) on an SD card
  * Add a small (tens or hundreds of MB) FAT32 partition and format it
  * Fill the rest of the space with an ext4 partition and format it
- * Unpack rootfs.tgz onto the ext4 partition (e.g. tar xvf rootfs.tgz -C /path/to/SD/partition/)
+ * Unpack product/rootfs.tgz onto the ext4 partition (e.g. tar xvf product/rootfs.tgz -C /path/to/SD/partition/)
+ * Copy product/Image.gz and product/tegra210-nintendo-switch.dtb to /path/to/SD/partition/boot/
  * Unmount/eject the SD card and pop it in your Switch
 
 Note that many of the community provided Linux rootfs images for the Switch do not include a kernel/DTB. You can add them yourself by mounting the SD card on a Linux machine and copying the two files from `product/` into `/path/to/SD/mount/boot/`
