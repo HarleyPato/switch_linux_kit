@@ -155,7 +155,7 @@ build_rootfs() {
     mkdir -p "${ROOTDIR}/rootfs"
     mypushd "${ROOTDIR}/rootfs"
         ../ubuntu_builder/build-image.sh "${ROOTDIR}/rootfs/chroot" rootfs.tar >> "${BUILDLOG}" 2>&1
-        tar -rf rootfs.tar -C "${ROOTDIR}/product/" boot
+        tar -rvf rootfs.tar -C "${ROOTDIR}/product/" ./boot/ >> "${BUILDLOG}" 2>&1
         gzip rootfs.tar
         mv -v "rootfs.tar.gz" "${ROOTDIR}/product/" | ts "${TSFMT}" >> "${BUILDLOG}"
     mypopd
