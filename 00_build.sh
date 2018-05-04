@@ -195,7 +195,7 @@ build_sd_image() {
     umount /mnt/rootfs
     losetup -d "${DEVNODE}"
     gzip -v -9 sd.img 2>&1 | ts "${TSFMT}" >> "${BUILDLOG}"
-    mv -v sd.img "${ROOTDIR}/product/" | ts "${TSFMT}" >> "${BUILDLOG}"
+    mv -v sd.img.gz "${ROOTDIR}/product/" | ts "${TSFMT}" >> "${BUILDLOG}"
 }
 
 build_all() {
