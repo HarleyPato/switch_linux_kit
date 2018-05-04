@@ -15,7 +15,7 @@ docker pull cmsj/aarch64_toolchain
 
 ### Compiling
 ```
-docker run --privileged -ti --rm -v$(pwd):/source cmsj/aarch64_toolchain bash 00_build.sh
+docker run --privileged -ti --rm -v/dev:/dev -v$(pwd):/source cmsj/aarch64_toolchain bash 00_build.sh
 ```
 
 The build script is pretty modular, so with some simple edits you could choose to build just the exploit chain, bootloader, kernel, rootfs, etc. if you so desire.

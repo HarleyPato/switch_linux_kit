@@ -150,15 +150,49 @@ build_linux() {
 }
 
 build_rootfs() {
-    # FIXME: This isn't currently injecting the /boot/ products
     myecho "Building Ubuntu filesystem..."
     mkdir -p "${ROOTDIR}/rootfs"
     mypushd "${ROOTDIR}/rootfs"
+        # Build the ubuntu rootfs
         ../ubuntu_builder/build-image.sh "${ROOTDIR}/rootfs/chroot" rootfs.tar >> "${BUILDLOG}" 2>&1
+        # Inject our /boot (kernel and DTB)
         tar -rvf rootfs.tar -C "${ROOTDIR}/product/" ./boot/ >> "${BUILDLOG}" 2>&1
         gzip rootfs.tar
+        # Not using copy_products here just because this is a ~1GB tarball that's rebuilt on every run, no point having two around
         mv -v "rootfs.tar.gz" "${ROOTDIR}/product/" | ts "${TSFMT}" >> "${BUILDLOG}"
     mypopd
+}
+
+build_sd_image() {
+    myecho "Building SD card image..."
+    # 3125MB is taken from the Raspbian image builder
+    dd if=/dev/zero of=sd.img bs=1M count=3125 >> "${BUILDLOG}" 2>&1
+    # Partition the blank image
+    fdisk sd.img <<-EOF &>>"${BUILDLOG}"
+        o
+        n
+        p
+        1
+
+        +1G
+        t
+        b
+        n
+        p
+        2
+
+
+        w
+    EOF
+    DEVNODE="$(losetup --partscan --show --find sd.img)"
+    mkfs.vfat "${DEVNODE}p1" >> "${BUILDLOG}"
+    mkfs.ext4 "${DEVNODE}p2" >> "${BUILDLOG}"
+    mkdir -p /mnt/rootfs
+    mount "${DEVNODE}p2" /mnt/rootfs
+    tar xvf rootfs.tar.gz -C /mnt/rootfs >> "${BUILDLOG}"
+    umount /mnt/rootfs
+    losetup -d "${DEVNODE}"
+    gzip -v -9 sd.img >> "${BUILDLOG}"
 }
 
 build_all() {
