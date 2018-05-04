@@ -31,6 +31,9 @@ IMGNAME_SMAUG=bootloader-dragon-google_smaug.7900.97.0.img
 
 TSFMT='[%Y-%m-%d %H:%M:%S]'
 
+mkdir -p "${ROOTDIR}/vendor"
+mkdir -p "${ROOTDIR}/product"
+
 # Helper functions
 make() {
     /usr/bin/make -j"${NPROC}" "$@" | ts "${TSFMT}" >> "${BUILDLOG}" 2>&1
@@ -63,6 +66,14 @@ myecho() {
 # Get ourselves in the right place
 cd "${ROOTDIR}"
 
+# Remove everything except the vendor folder, since that is pretty well guarded, and pointless to re-download every time
+reset_build() {
+    git submodule deinit .
+    rm -rf product/*
+    rm -rf rootfs/*
+    git submodule update --init --recursive
+}
+
 fetch_tegra_ram_trainer() {
     myecho "Checking Tegra RAM trainer blob..."
     mypushd "${ROOTDIR}/vendor"
@@ -91,7 +102,7 @@ build_exploit() {
         copy_products exploit switch.scr switch.conf imx_usb.conf
     mypopd
     copy_products exploit boot_linux.sh
-    tar cvzf "${ROOTDIR}/product/exploit.tar.gz" -C "${ROOTDIR}/products/" exploit >> "${BUILDLOG}" 2>&1
+    tar cvzf "${ROOTDIR}/product/exploit.tar.gz" -C "${ROOTDIR}/product/" exploit >> "${BUILDLOG}" 2>&1
 }
 
 build_uboot() {
@@ -201,6 +212,7 @@ build_sd_image() {
 }
 
 build_all() {
+    reset_build
     fetch_tegra_ram_trainer
     build_exploit
     build_uboot
