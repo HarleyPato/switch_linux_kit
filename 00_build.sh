@@ -187,14 +187,14 @@ build_sd_image() {
 
     # Make the partitions available via loopback, format them, unpack the rootfs
     DEVNODE="$(losetup --partscan --show --find sd.img)"
-    mkfs.vfat "${DEVNODE}p1" | ts "${TSFMT}" >> "${BUILDLOG}"
-    mkfs.ext4 "${DEVNODE}p2" | ts "${TSFMT}" >> "${BUILDLOG}"
+    mkfs.vfat "${DEVNODE}p1" 2>&1 | ts "${TSFMT}" >> "${BUILDLOG}"
+    mkfs.ext4 "${DEVNODE}p2" 2>&1 | ts "${TSFMT}" >> "${BUILDLOG}"
     mkdir -p /mnt/rootfs
     mount "${DEVNODE}p2" /mnt/rootfs
     tar xvf "${ROOTDIR}/product/rootfs.tar.gz" -C /mnt/rootfs 2>&1 | ts "${TSFMT}" >> "${BUILDLOG}"
     umount /mnt/rootfs
     losetup -d "${DEVNODE}"
-    gzip -v -9 sd.img | ts "${TSFMT}" >> "${BUILDLOG}"
+    gzip -v -9 sd.img 2>&1 | ts "${TSFMT}" >> "${BUILDLOG}"
     mv -v sd.img "${ROOTDIR}/product/" | ts "${TSFMT}" >> "${BUILDLOG}"
 }
 
