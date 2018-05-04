@@ -40,6 +40,9 @@ Note that many of the community provided Linux rootfs images for the Switch do n
 
 Attach your Switch to USB, trigger the hardware exploit (ie short pin 10 of the right joycon slot, to ground), and run:
 ```
-sudo ./02_boot_linux.sh
+cd products/exploit/
+sudo ./boot_linux.sh
 
 ```
+
+(If you want to run the exploit from a separate host to your build host, you'll find `exploit.tar.gz` in `products/` with all of the scripts, executables and data that are needed)
