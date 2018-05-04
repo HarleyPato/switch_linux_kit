@@ -72,6 +72,7 @@ cd "${ROOTDIR}"
 
 # Remove everything except the vendor folder, since that is pretty well guarded, and pointless to re-download every time
 reset_build() {
+    echo "Resetting build environment..."
     git submodule deinit .
     rm -rf product/*
     rm -rf rootfs/*

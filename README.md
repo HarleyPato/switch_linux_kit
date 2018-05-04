@@ -5,12 +5,11 @@ Note that this is an unofficial project and is not connected to, or endorsed by,
 
 Also note that the [build toolchain](https://hub.docker.com/r/cmsj/aarch64_toolchain/) is based around Docker, so you should have Docker installed.
 
-### Cloning
+### Preparation
 ```
+docker pull cmsj/aarch64_toolchain
 git clone https://github.com/cmsj/switch_linux_kit
 cd switch_linux_kit
-git submodule update --init --recursive
-docker pull cmsj/aarch64_toolchain
 ```
 
 ### Compiling
@@ -20,21 +19,18 @@ docker run --privileged -ti --rm -v/dev:/dev -v$(pwd):/source cmsj/aarch64_toolc
 
 The build script is pretty modular, so with some simple edits you could choose to build just the exploit chain, bootloader, kernel, rootfs, etc. if you so desire.
 
+So far this has only been tested on a CentOS 7 host, please report issues/success with other distros.
+
 ### Micro SD Card Preparation
 
-You need a microSD card with a Linux root filesystem on it (see previous step), and that rootfs needs to include the following files in /boot:
- * `Image.gz` (Linux kernel - found in `product/` after the build has finished)
- * `tegra210-nintendo-switch.dtb` (Device Tree binary - found in `product/` after the build has finished)
+You need a microSD card for Linux, which you can prepare with these steps:
 
-The steps for creating such a card would be:
- * Create a new Master Boot Record (MBR) on an SD card
- * Add a small (tens or hundreds of MB) FAT32 partition and format it
- * Fill the rest of the space with an ext4 partition and format it
- * Unpack product/rootfs.tgz onto the ext4 partition (e.g. tar xvf product/rootfs.tgz -C /path/to/SD/partition/)
- * Copy product/Image.gz and product/tegra210-nintendo-switch.dtb to /path/to/SD/partition/boot/
- * Unmount/eject the SD card and pop it in your Switch
+ * Use a tool that can write disk images (e.g. dd or Etch)
+ * Unzip `sd.img.gz` and write it to the SD card
 
-Note that many of the community provided Linux rootfs images for the Switch do not include a kernel/DTB. You can add them yourself by mounting the SD card on a Linux machine and copying the two files from `product/` into `/path/to/SD/mount/boot/`
+Notes:
+ * The Linux partition on the SD card is quite small, quite full and does not resize itself automatically. This will be fixed soon.
+ * The Linux partition contains both the kernel and device tree (the `.dtb` file) in `/boot/` and the exploit chain produced by this builder expects to find them there (ie you can't use a f0f exploit chain obtained elsewhere that is expecting to send `Image.gz` and the `.dtb` file over USB)
 
 ### Running
 
