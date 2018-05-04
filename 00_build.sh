@@ -41,8 +41,10 @@ sha256() {
 }
 
 copy_products() {
+    targetdir="${ROOTDIR}/product/${1}" ; shift
+    mkdir -p "${targetdir}"
     for product in "$@" ; do
-        cp -v "${product}" "${ROOTDIR}/product" | ts "${TSFMT}" >> "${BUILDLOG}"
+        cp -v "${product}" "${targetdir}" | ts "${TSFMT}" >> "${BUILDLOG}"
     done
 }
 
@@ -83,10 +85,10 @@ build_exploit() {
     myecho "Building shofel2 exploit..."
     mypushd "${ROOTDIR}/shofel2/exploit"
         make
-        copy_products shofel2.py cbfs.bin
+        copy_products exploit shofel2.py cbfs.bin
     mypopd
     mypushd "${ROOTDIR}/shofel2/usb_loader"
-        copy_products switch.scr switch.conf imx_usb.conf
+        copy_products exploit switch.scr switch.conf imx_usb.conf
     mypopd
 }
 
@@ -95,7 +97,7 @@ build_uboot() {
     mypushd "${ROOTDIR}/u-boot"
         make nintendo-switch_defconfig
         make
-        copy_products tools/mkimage
+        copy_products exploit tools/mkimage
     mypopd
 }
 
@@ -125,7 +127,7 @@ build_coreboot() {
         fi
 
         make
-        copy_products build/coreboot.rom
+        copy_products exploit build/coreboot.rom
     mypopd
 }
 
@@ -133,7 +135,7 @@ build_imx_loader() {
     myecho "Building imx loader..."
     mypushd "${ROOTDIR}/imx_usb_loader"
         make
-        copy_products imx_usb
+        copy_products exploit imx_usb
     mypopd
 }
 
@@ -143,16 +145,19 @@ build_linux() {
         export ARCH=arm64
         make nintendo-switch_defconfig
         make
-        copy_products arch/arm64/boot/Image.gz arch/arm64/boot/dts/nvidia/tegra210-nintendo-switch.dtb
+        copy_products boot arch/arm64/boot/Image.gz arch/arm64/boot/dts/nvidia/tegra210-nintendo-switch.dtb
     mypopd
 }
 
 build_rootfs() {
+    # FIXME: This isn't currently injecting the /boot/ products
     myecho "Building Ubuntu filesystem..."
     mkdir -p "${ROOTDIR}/rootfs"
     mypushd "${ROOTDIR}/rootfs"
-        ../ubuntu_builder/build-image.sh "${ROOTDIR}/rootfs/chroot" rootfs.tgz >> "${BUILDLOG}" 2>&1
-        mv -v "rootfs.tgz" "${ROOTDIR}/product/" | ts "${TSFMT}" >> "${BUILDLOG}"
+        ../ubuntu_builder/build-image.sh "${ROOTDIR}/rootfs/chroot" rootfs.tar >> "${BUILDLOG}" 2>&1
+        tar -rf rootfs.tar -C "${ROOTDIR}/product/" boot
+        gzip rootfs.tar
+        mv -v "rootfs.tar.gz" "${ROOTDIR}/product/" | ts "${TSFMT}" >> "${BUILDLOG}"
     mypopd
 }
 
