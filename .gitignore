@@ -2,5 +2,7 @@ build.log
 exploit.log
 product/*
 rootfs
+sd.img
+sd.img.gz
 vendor/tegra_mtc.bin
 vendor/ryu-*
