@@ -47,6 +47,10 @@ copy_products() {
     targetdir="${ROOTDIR}/product/${1}" ; shift
     mkdir -p "${targetdir}"
     for product in "$@" ; do
+        if ! [ -e "${product}" ]; then
+            build_failed
+            exit 1
+        fi
         cp -v "${product}" "${targetdir}" | ts "${TSFMT}" >> "${BUILDLOG}"
     done
 }
