@@ -167,13 +167,15 @@ build_linux() {
 }
 
 build_rootfs() {
-    myecho "Building Ubuntu filesystem..."
+    myecho "Building Ubuntu filesystem (this will take 20+ minutes)..."
     mkdir -p "${ROOTDIR}/rootfs"
     mypushd "${ROOTDIR}/rootfs"
         # Build the ubuntu rootfs
         ../ubuntu_builder/build-image.sh "${ROOTDIR}/rootfs/chroot" rootfs.tar 2>&1 | ts "${TSFMT}" >> "${BUILDLOG}"
         # Inject our /boot (kernel and DTB)
+        myecho "Injecting kernel/dtb into Ubuntu filesystem..."
         tar -rvf rootfs.tar -C "${ROOTDIR}/product/" ./boot/ 2>&1 | ts "${TSFMT}" >> "${BUILDLOG}"
+        myecho "Compressing Ubuntu filesystem..."
         gzip rootfs.tar
         # Not using copy_products here just because this is a ~1GB tarball that's rebuilt on every run, no point having two around
         mv -v "rootfs.tar.gz" "${ROOTDIR}/product/" | ts "${TSFMT}" >> "${BUILDLOG}"
@@ -228,3 +230,4 @@ build_all() {
 }
 
 build_all
+myecho "Finished."
