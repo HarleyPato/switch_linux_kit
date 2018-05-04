@@ -173,7 +173,7 @@ build_sd_image() {
         p
         1
 
-        +1G
+        +100M
         t
         b
         n
@@ -191,7 +191,7 @@ build_sd_image() {
     mkfs.ext4 "${DEVNODE}p2" | ts "${TSFMT}" >> "${BUILDLOG}"
     mkdir -p /mnt/rootfs
     mount "${DEVNODE}p2" /mnt/rootfs
-    tar xvf "${ROOTDIR}/product/rootfs.tar.gz" -C /mnt/rootfs | ts "${TSFMT}" >> "${BUILDLOG}"
+    tar xvf "${ROOTDIR}/product/rootfs.tar.gz" -C /mnt/rootfs 2>&1 | ts "${TSFMT}" >> "${BUILDLOG}"
     umount /mnt/rootfs
     losetup -d "${DEVNODE}"
     gzip -v -9 sd.img | ts "${TSFMT}" >> "${BUILDLOG}"
