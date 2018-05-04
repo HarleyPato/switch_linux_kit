@@ -91,7 +91,7 @@ build_exploit() {
         copy_products exploit switch.scr switch.conf imx_usb.conf
     mypopd
     copy_products exploit boot_linux.sh
-    tar cvzf "${ROOTDIR}/products/exploit.tar.gz" -C "${ROOTDIR}/products/" exploit >> "${BUILDLOG}" 2>&1
+    tar cvzf "${ROOTDIR}/product/exploit.tar.gz" -C "${ROOTDIR}/products/" exploit >> "${BUILDLOG}" 2>&1
 }
 
 build_uboot() {
