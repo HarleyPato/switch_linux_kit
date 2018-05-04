@@ -9,7 +9,7 @@ Also note that the [build toolchain](https://hub.docker.com/r/cmsj/aarch64_toolc
 ```
 git clone https://github.com/cmsj/switch_linux_kit
 cd switch_linux_kit
-git submodule update --init
+git submodule update --init --recursive
 docker pull cmsj/aarch64_toolchain
 ```
 

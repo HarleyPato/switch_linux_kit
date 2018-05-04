@@ -70,7 +70,7 @@ fetch_tegra_ram_trainer() {
             if ! [ -f "${ZIPNAME_RYU_OPM}" ] || [ "$(sha256 "${ZIPNAME_RYU_OPM}")" != "${SHA256_RYU_OPM}" ]; then
                 myecho "Fetching Tegra RAM trainer blob..."
                 rm -rf "${DIRNAME_RYU_OPM}" "${ZIPNAME_RYU_OPM}"
-                wget "${URL_RYU_OPM}" | ts "${TSFMT}" >> "${BUILDLOG}"
+                wget "${URL_RYU_OPM}" 2>&1 | ts "${TSFMT}" >> "${BUILDLOG}"
             fi
             if ! [ -f "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}" ] || [ "$(sha256 "${DIRNAME_RYU_OPM}/${IMGNAME_SMAUG}")" != "${SHA256_SMAUG}" ]; then
                 myecho "Unpacking Tegra RAM trainer blob..."
