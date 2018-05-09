@@ -12,8 +12,7 @@ BUILDLOG="${ROOTDIR}/build.log"
 echo "" > "${BUILDLOG}"
 
 function build_failed() {
-    echo "ERROR: Build failed. Build log follows:"
-    cat "${BUILDLOG}"
+    echo "ERROR: Build failed. Check ${BUILDLOG} for full details."
 }
 
 trap build_failed ERR
