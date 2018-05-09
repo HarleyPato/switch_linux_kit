@@ -168,6 +168,11 @@ build_linux() {
 }
 
 build_rootfs() {
+    grep -q binfmt_misc /proc/modules
+    if [ $? != 0 ]; then
+        myecho "ERROR: You need to modprobe binfmt_misc before running this build."
+        exit 1
+    fi
     myecho "Building Ubuntu filesystem (this will take 20+ minutes)..."
     mkdir -p "${ROOTDIR}/rootfs"
     mypushd "${ROOTDIR}/rootfs"
