@@ -34,7 +34,6 @@ You need a microSD card for Linux, which you can prepare with these steps:
 
 Notes:
 
-* The Linux partition on the SD card is quite small, quite full and does not resize itself automatically. This will be fixed soon.
 * The Linux partition contains both the kernel and device tree (the `.dtb` file) in `/boot/` and the exploit chain produced by this builder expects to find them there (ie you can't use a f0f exploit chain obtained elsewhere that is expecting to send `Image.gz` and the `.dtb` file over USB)
 
 ### Running
