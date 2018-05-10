@@ -9,7 +9,8 @@
 	url = https://github.com/fail0verflow/switch-u-boot.git
 [submodule "linux"]
 	path = linux
-	url = https://github.com/fail0verflow/switch-linux.git
+	url = https://github.com/tardyp/switch-linux.git
+	branch = rebase_4.17
 [submodule "imx_usb_loader"]
 	path = imx_usb_loader
 	url = https://github.com/boundarydevices/imx_usb_loader.git
