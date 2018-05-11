@@ -6,7 +6,8 @@
 	url = https://github.com/cmsj/shofel2.git
 [submodule "u-boot"]
 	path = u-boot
-	url = https://github.com/fail0verflow/switch-u-boot.git
+	url = https://github.com/cmsj/switch-u-boot.git
+	branch = switch
 [submodule "linux"]
 	path = linux
 	url = https://github.com/tardyp/switch-linux.git
