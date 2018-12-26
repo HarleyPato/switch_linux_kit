@@ -1,23 +1,23 @@
 [submodule "coreboot"]
 	path = coreboot
-	url = https://github.com/fail0verflow/switch-coreboot.git
+	url = https://github.com/HarleyPato/coreboot.git
 [submodule "shofel2"]
 	path = shofel2
-	url = https://github.com/cmsj/shofel2.git
+	url = https://github.com/HarleyPato/shofel2.git
 [submodule "u-boot"]
 	path = u-boot
-	url = https://github.com/cmsj/switch-u-boot.git
+	url = https://github.com/HarleyPato/u-boot.git
 	branch = switch
 [submodule "linux"]
 	path = linux
-	url = https://github.com/tardyp/switch-linux.git
-	branch = rebase_4.17
+	url = https://github.com/HarleyPato/linux.git
+	branch = switch
 [submodule "imx_usb_loader"]
 	path = imx_usb_loader
-	url = https://github.com/boundarydevices/imx_usb_loader.git
+	url = https://github.com/HarleyPato/imx_usb_loader.git
 [submodule "aarch64_toolchain"]
 	path = aarch64_toolchain
-	url = https://github.com/cmsj/aarch64_toolchain_docker
+	url = https://github.com/HarleyPato/aarch64_toolchain_docker.git
 [submodule "ubuntu_builder"]
 	path = ubuntu_builder
-	url = https://github.com/cmsj/nintendo-switch-ubuntu-builder.git
+	url = https://github.com/HarleyPato/nintendo-switch-ubuntu-builder.git
