@@ -9,9 +9,10 @@ Also note that the [build toolchain](https://hub.docker.com/r/cmsj/aarch64_toolc
 ### Preparation
 
 ```
-docker pull cmsj/aarch64_toolchain
-git clone https://github.com/cmsj/switch_linux_kit
+docker pull HarleyPato/aarch64_toolchain_docker
+git clone https://github.com/HarleyPato/switch_linux_kit.git
 cd switch_linux_kit
+git submodule update --init
 ```
 
 ### Compiling
